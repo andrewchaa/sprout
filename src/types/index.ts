@@ -37,6 +37,7 @@ export interface TimerSession {
   timeRemaining: number    // in seconds
   isRunning: boolean
   isPaused: boolean
+  startTime: number | null  // timestamp when timer started (Date.now())
 }
 
 export interface TimerState {
