@@ -38,6 +38,11 @@ export default function Timer() {
         })
       } else if (mode === 'break') {
         // Break completed
+        // Play sound
+        playDingSound().catch((error) => {
+          console.warn('Failed to play completion sound:', error)
+        })
+
         showNotification('Break Complete!', {
           body: 'Feeling refreshed? Start another focus session!',
           tag: 'break-complete',
