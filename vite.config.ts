@@ -14,13 +14,14 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png', 'sounds/*.mp3'],
       manifest: {
-        name: 'Sprout PWA',
+        name: 'Sprout Pomodoro',
         short_name: 'Sprout',
-        description: 'A modern Progressive Web App skeleton with React, TanStack Query, and Tailwind CSS',
+        description: 'Pomodoro timer that helps you grow your focus, one session at a time',
         theme_color: '#10b981',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
+        start_url: '/sprout/',
+        scope: '/sprout/',
         icons: [
           {
             src: 'icons/icon-72x72.png',
