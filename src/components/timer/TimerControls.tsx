@@ -10,9 +10,6 @@ interface TimerControlsProps {
   onStartBreak: () => void
 }
 
-/**
- * Timer control buttons (start, pause, reset, start break)
- */
 export function TimerControls({
   isRunning,
   isPaused,
@@ -23,52 +20,53 @@ export function TimerControls({
   onStartBreak,
 }: TimerControlsProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center items-center">
-      {/* Start/Resume button - shown when idle or paused */}
-      {(!isRunning || isPaused) && (
-        <Button
-          onClick={onStart}
-          variant="primary"
-          size="lg"
-          className="min-w-32"
-        >
-          {isPaused ? 'Resume' : 'Start Focus'}
-        </Button>
-      )}
+    <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-wrap gap-3 justify-center items-center w-full">
+        {/* Start/Resume */}
+        {(!isRunning || isPaused) && (
+          <Button
+            onClick={onStart}
+            variant="primary"
+            size="lg"
+            className="flex-1 max-w-xs"
+          >
+            {isPaused ? '▶ Resume' : '▶ Start Focus'}
+          </Button>
+        )}
 
-      {/* Pause button - shown when running */}
-      {isRunning && !isPaused && (
-        <Button
-          onClick={onPause}
-          variant="secondary"
-          size="lg"
-          className="min-w-32"
-        >
-          Pause
-        </Button>
-      )}
+        {/* Pause */}
+        {isRunning && !isPaused && (
+          <Button
+            onClick={onPause}
+            variant="outline"
+            size="lg"
+            className="flex-1 max-w-xs"
+          >
+            ⏸ Pause
+          </Button>
+        )}
 
-      {/* Reset button - shown when not idle */}
+        {/* Start Break */}
+        {mode === 'idle' && !isRunning && (
+          <Button
+            onClick={onStartBreak}
+            variant="secondary"
+            size="lg"
+            className="flex-1 max-w-xs"
+          >
+            ☕ Start Break
+          </Button>
+        )}
+      </div>
+
+      {/* Reset as subtle text link */}
       {mode !== 'idle' && (
-        <Button
+        <button
           onClick={onReset}
-          variant="outline"
-          size="lg"
+          className="text-sm text-slate-400 hover:text-slate-600 underline underline-offset-2 transition-colors"
         >
           Reset
-        </Button>
-      )}
-
-      {/* Start Break button - shown when idle (after completing focus) */}
-      {mode === 'idle' && !isRunning && (
-        <Button
-          onClick={onStartBreak}
-          variant="secondary"
-          size="lg"
-          className="min-w-32"
-        >
-          Start Break
-        </Button>
+        </button>
       )}
     </div>
   )
