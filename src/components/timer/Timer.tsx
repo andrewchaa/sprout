@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useTimer } from '../../hooks/useTimer'
 import { useNotification } from '../../hooks/useNotification'
 import { playDingSound, preloadSound } from '../../utils/sound'
@@ -16,6 +17,17 @@ export default function Timer() {
   const lastSproutCount = useRef<number>(0)
   const sproutJustAdded = useRef(false)
   const addSproutRef = useRef<(() => void) | null>(null)
+
+  // Settings visibility state (persisted to localStorage)
+  const [showSettings, setShowSettings] = useLocalStorage<boolean>(
+    'sprout-timer-settings-visible',
+    false  // Hidden by default
+  )
+
+  // Toggle function
+  const toggleSettings = () => {
+    setShowSettings(prev => !prev)
+  }
 
   // Handle timer completion - will be passed to useTimer
   const handleComplete = useCallback(
@@ -95,17 +107,33 @@ export default function Timer() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
+      <div className="relative text-center">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Sprout Pomodoro</h1>
         <p className="text-slate-600">Grow your focus, one session at a time</p>
+
+        {/* Settings Toggle Button */}
+        <button
+          onClick={toggleSettings}
+          className="absolute top-0 right-0 text-2xl hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-lg p-2"
+          aria-label={showSettings ? 'Hide settings' : 'Show settings'}
+          title={showSettings ? 'Hide settings' : 'Show settings'}
+        >
+          ⚙️
+        </button>
       </div>
 
-      {/* Timer Settings */}
-      <TimerSettings
-        settings={settings}
-        onUpdate={updateSettings}
-        disabled={isSettingsDisabled}
-      />
+      {/* Timer Settings - Collapsible */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          showSettings ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <TimerSettings
+          settings={settings}
+          onUpdate={updateSettings}
+          disabled={isSettingsDisabled}
+        />
+      </div>
 
       {/* Timer Display */}
       <TimerDisplay

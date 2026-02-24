@@ -30,7 +30,7 @@ export function TimerControls({
             size="lg"
             className="flex-1 max-w-xs"
           >
-            {isPaused ? '▶ Resume' : '▶ Start Focus'}
+            {isPaused ? '▶ Resume' : '▶ Focus'}
           </Button>
         )}
 
@@ -54,7 +54,7 @@ export function TimerControls({
             size="lg"
             className="flex-1 max-w-xs"
           >
-            ☕ Start Break
+            ☕ Break
           </Button>
         )}
       </div>
