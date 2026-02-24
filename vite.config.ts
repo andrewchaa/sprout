@@ -8,8 +8,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
-      includeAssets: ['icons/*.png'],
+      includeAssets: ['icons/*.png', 'sounds/*.mp3'],
       manifest: {
         name: 'Sprout PWA',
         short_name: 'Sprout',
@@ -62,52 +65,11 @@ export default defineConfig({
           }
         ]
       },
-      workbox: {
-        // Precache all build assets
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-        // Runtime caching strategies
-        runtimeCaching: [
-          {
-            // Cache API calls with NetworkFirst strategy
-            urlPattern: /^https:\/\/api\..*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              networkTimeoutSeconds: 10
-            }
-          },
-          {
-            // Cache images with CacheFirst strategy
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'image-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              }
-            }
-          },
-          {
-            // Cache fonts with CacheFirst strategy
-            urlPattern: /\.(?:woff|woff2|ttf|otf|eot)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'font-cache',
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              }
-            }
-          }
-        ]
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,mp3}'],
       },
       devOptions: {
-        enabled: false // Set to true to test PWA in dev mode
+        enabled: true // Set to true to test PWA in dev mode
       }
     })
   ],

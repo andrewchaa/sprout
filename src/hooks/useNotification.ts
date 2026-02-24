@@ -1,12 +1,25 @@
 import { useState, useEffect } from 'react'
 
 /**
- * Custom hook for managing browser notifications
+ * Custom hook for managing Service Worker notifications
+ * Uses Service Worker API for better reliability when device is locked (Android)
  */
 export function useNotification() {
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   )
+  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
+
+  // Get Service Worker registration
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((reg) => {
+        setRegistration(reg)
+      }).catch((error) => {
+        console.warn('Service Worker not ready:', error)
+      })
+    }
+  }, [])
 
   // Update permission state when it changes
   useEffect(() => {
@@ -39,7 +52,8 @@ export function useNotification() {
   }
 
   /**
-   * Show a notification with the given title and options
+   * Show a notification using Service Worker API for better reliability
+   * Falls back to basic notifications if Service Worker is unavailable
    */
   const showNotification = (title: string, options?: NotificationOptions): void => {
     if (typeof Notification === 'undefined') {
@@ -53,14 +67,26 @@ export function useNotification() {
     }
 
     try {
-      const notification = new Notification(title, {
-        icon: '/icon-192x192.png',
-        badge: '/icon-192x192.png',
-        ...options,
-      })
+      // Use Service Worker notification (better for background/locked devices)
+      if (registration) {
+        registration.showNotification(title, {
+          icon: '/sprout/icons/icon-192x192.png',
+          badge: '/sprout/icons/icon-192x192.png',
+          vibrate: [200, 100, 200] as VibratePattern, // Vibration pattern for mobile
+          requireInteraction: false, // Auto-dismiss after some time
+          ...options,
+        } as NotificationOptions)
+      } else {
+        // Fallback to basic notification if Service Worker not available
+        const notification = new Notification(title, {
+          icon: '/sprout/icons/icon-192x192.png',
+          badge: '/sprout/icons/icon-192x192.png',
+          ...options,
+        })
 
-      // Auto-close notification after 5 seconds
-      setTimeout(() => notification.close(), 5000)
+        // Auto-close notification after 5 seconds
+        setTimeout(() => notification.close(), 5000)
+      }
     } catch (error) {
       console.warn('Failed to show notification:', error)
     }
