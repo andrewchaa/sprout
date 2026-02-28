@@ -105,27 +105,32 @@ export default function Timer() {
   const isSettingsDisabled = session.isRunning || session.isPaused
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="relative text-center">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Sprout Pomodoro</h1>
-        <p className="text-slate-600">Grow your focus, one session at a time</p>
+    <div
+      className="flex-1 relative overflow-hidden flex flex-col"
+      style={{ background: 'linear-gradient(160deg, #f8e8c4 0%, #edda9e 55%, #e4cc88 100%)' }}
+    >
+      {/* Background scattered garden plants */}
+      <SproutGarden sprouts={sprouts} animated={sproutJustAdded.current} />
 
-        {/* Settings Toggle Button */}
-        <button
-          onClick={toggleSettings}
-          className="absolute top-0 right-0 text-2xl hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-lg p-2"
-          aria-label={showSettings ? 'Hide settings' : 'Show settings'}
-          title={showSettings ? 'Hide settings' : 'Show settings'}
-        >
-          ⚙️
-        </button>
+      {/* Garden count badge — top right */}
+      <div className="absolute top-3 right-3 z-10 bg-white/90 rounded-full px-3 py-1 shadow flex items-center gap-1.5 text-sm font-semibold text-slate-700 select-none">
+        Your Garden: {sprouts} Sprouts 🌿
       </div>
 
-      {/* Timer Settings - Collapsible */}
+      {/* Settings gear — top left */}
+      <button
+        onClick={toggleSettings}
+        className="absolute top-2 left-3 z-20 text-xl opacity-50 hover:opacity-90 transition-opacity focus:outline-none rounded-lg p-1"
+        aria-label={showSettings ? 'Hide settings' : 'Show settings'}
+        title={showSettings ? 'Hide settings' : 'Show settings'}
+      >
+        ⚙️
+      </button>
+
+      {/* Settings panel overlay */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          showSettings ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        className={`absolute top-11 left-3 right-3 z-30 transition-all duration-300 ease-in-out ${
+          showSettings ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
       >
         <TimerSettings
@@ -135,37 +140,38 @@ export default function Timer() {
         />
       </div>
 
-      {/* Timer Display */}
-      <TimerDisplay
-        timeRemaining={session.timeRemaining}
-        mode={session.mode}
-        totalTime={
-          session.mode === 'focus'
-            ? settings.focusDuration * 60
-            : session.mode === 'break'
-            ? settings.breakDuration * 60
-            : 0
-        }
-      />
+      {/* Timer pot — vertically centered in remaining space */}
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <TimerDisplay
+          timeRemaining={session.timeRemaining}
+          mode={session.mode}
+          totalTime={
+            session.mode === 'focus'
+              ? settings.focusDuration * 60
+              : session.mode === 'break'
+              ? settings.breakDuration * 60
+              : 0
+          }
+        />
+      </div>
 
-      {/* Timer Controls */}
-      <TimerControls
-        isRunning={session.isRunning}
-        isPaused={session.isPaused}
-        mode={session.mode}
-        onStart={start}
-        onPause={pause}
-        onReset={reset}
-        onStartBreak={startBreak}
-      />
+      {/* Controls — pinned to bottom */}
+      <div className="relative z-10 px-4 pb-4">
+        <TimerControls
+          isRunning={session.isRunning}
+          isPaused={session.isPaused}
+          mode={session.mode}
+          onStart={start}
+          onPause={pause}
+          onReset={reset}
+          onStartBreak={startBreak}
+        />
+      </div>
 
-      {/* Sprout Garden */}
-      <SproutGarden sprouts={sprouts} animated={sproutJustAdded.current} />
-
-      {/* Notification Permission Hint */}
+      {/* Notification hint */}
       {permission === 'denied' && (
-        <div className="text-center text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
-          Notifications are blocked. Enable them in your browser settings for completion alerts.
+        <div className="absolute bottom-20 left-4 right-4 z-10 text-center text-xs text-amber-700 bg-amber-50/90 p-2 rounded-lg">
+          Notifications are blocked. Enable them in your browser settings.
         </div>
       )}
     </div>

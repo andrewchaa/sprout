@@ -1,58 +1,59 @@
-import { Card } from '../ui/Card'
-
 interface SproutGardenProps {
   sprouts: number
   animated?: boolean
 }
 
-export function SproutGarden({ sprouts, animated = false }: SproutGardenProps) {
-  const sproutElements = Array.from({ length: sprouts }, (_, index) => (
-    <span
-      key={index}
-      className={`text-3xl ${animated && index === sprouts - 1 ? 'sprout-fade-in' : ''}`}
-      role="img"
-      aria-label="sprout"
-    >
-      🌱
-    </span>
-  ))
+interface PlantSlot {
+  top: string
+  emoji: string
+  left?: string
+  right?: string
+}
 
-  const motivationText =
-    sprouts === 0 ? null
-    : sprouts === 1 ? 'Great start! Keep growing.'
-    : sprouts < 5 ? 'Your garden is taking shape!'
-    : sprouts < 10 ? 'Looking lush! Keep it up.'
-    : sprouts < 20 ? "Impressive growth! You're on fire."
-    : 'Amazing dedication! Your garden is thriving.'
+// Fixed plant slots scattered around the perimeter, avoiding the center pot area
+// and the bottom button strip. Positions are percentages of the parent container.
+const PLANT_SLOTS: PlantSlot[] = [
+  // Top strip
+  { top: '4%',  left: '7%',   emoji: '🌸' },
+  { top: '13%', left: '26%',  emoji: '🌱' },
+  { top: '4%',  left: '50%',  emoji: '🌱' },
+  { top: '12%', left: '66%',  emoji: '🌼' },
+  // Left column
+  { top: '24%', left: '3%',   emoji: '🌱' },
+  { top: '40%', left: '2%',   emoji: '🌺' },
+  { top: '57%', left: '4%',   emoji: '🌱' },
+  { top: '71%', left: '3%',   emoji: '🌸' },
+  // Right column
+  { top: '24%', right: '3%',  emoji: '🌱' },
+  { top: '40%', right: '2%',  emoji: '🌼' },
+  { top: '57%', right: '4%',  emoji: '🌱' },
+  { top: '71%', right: '3%',  emoji: '🌺' },
+  // Bottom corners (above button strip)
+  { top: '82%', left: '11%',  emoji: '🌱' },
+  { top: '80%', left: '38%',  emoji: '🌸' },
+  { top: '82%', right: '11%', emoji: '🌱' },
+  // Extra fill
+  { top: '18%', left: '14%',  emoji: '🌼' },
+]
+
+export function SproutGarden({ sprouts, animated = false }: SproutGardenProps) {
+  const visibleCount = Math.min(sprouts, PLANT_SLOTS.length)
 
   return (
-    <Card className="p-5" style={{ backgroundColor: '#fffbeb' }}>
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-semibold text-slate-800">🌾 Your Garden</h2>
-        <div className="text-xs font-semibold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-          🌱 × {sprouts}
-        </div>
-      </div>
-
-      {sprouts === 0 ? (
-        <div className="text-center py-10 text-slate-400">
-          <div className="text-5xl mb-3">🌾</div>
-          <div className="text-sm">Complete a focus session to grow your first sprout!</div>
-        </div>
-      ) : (
-        <div
-          className="flex flex-wrap gap-1.5 p-4 rounded-xl min-h-20"
-          style={{ backgroundColor: '#fef3c7' }}
+    <>
+      {PLANT_SLOTS.slice(0, visibleCount).map((slot, index) => (
+        <span
+          key={index}
+          className={`absolute text-2xl select-none pointer-events-none ${
+            animated && index === visibleCount - 1 ? 'sprout-fade-in' : ''
+          }`}
+          style={{ top: slot.top, left: slot.left, right: slot.right }}
+          role="img"
+          aria-label="garden plant"
         >
-          {sproutElements}
-        </div>
-      )}
-
-      {motivationText && (
-        <div className="mt-3 text-xs text-amber-700 text-center font-medium">
-          {motivationText}
-        </div>
-      )}
-    </Card>
+          {slot.emoji}
+        </span>
+      ))}
+    </>
   )
 }

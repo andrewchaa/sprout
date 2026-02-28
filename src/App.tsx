@@ -9,7 +9,7 @@ const App: FC = () => {
     <>
       <OfflineIndicator />
       <Layout>
-        <div className="max-w-2xl mx-auto">
+        <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full">
           <Timer />
         </div>
       </Layout>

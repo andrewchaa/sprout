@@ -27,7 +27,7 @@ export function TimerControls({
           <Button
             onClick={onStart}
             variant="primary"
-            size="lg"
+            size="md"
             className="flex-1 max-w-xs"
           >
             {isPaused ? '▶ Resume' : '▶ Focus'}
@@ -39,7 +39,7 @@ export function TimerControls({
           <Button
             onClick={onPause}
             variant="outline"
-            size="lg"
+            size="md"
             className="flex-1 max-w-xs"
           >
             ⏸ Pause
@@ -51,7 +51,7 @@ export function TimerControls({
           <Button
             onClick={onStartBreak}
             variant="secondary"
-            size="lg"
+            size="md"
             className="flex-1 max-w-xs"
           >
             ☕ Break

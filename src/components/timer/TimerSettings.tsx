@@ -26,7 +26,7 @@ export function TimerSettings({ settings, onUpdate, disabled }: TimerSettingsPro
   }
 
   return (
-    <Card className="p-5" style={{ backgroundColor: disabled ? '#f0fdf4' : '#fffbeb' }}>
+    <Card className="p-3" style={{ backgroundColor: disabled ? '#f0fdf4' : '#fffbeb' }}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold text-slate-800">Timer Settings</h2>
         {disabled && (
