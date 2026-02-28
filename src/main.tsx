@@ -18,6 +18,11 @@ const queryClient = new QueryClient({
   },
 })
 
+// Resize to a compact window when launched as a standalone PWA
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  window.resizeTo(400, 580)
+}
+
 // Register service worker
 const updateSW = registerSW({
   onNeedRefresh() {
